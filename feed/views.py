@@ -26,9 +26,6 @@ def fetch_user_feed_data(current_user_id):
         next_update[next_update_time] = current_user_id
         UserFeed.objects.filter(user_id=current_user_id).delete()
 
-
-
-
         if len(countries) != 0:
             for country in countries:
                 country_url = 'https://newsapi.org/v2/top-headlines?country={}&apiKey={}'.format(country, api_key)
@@ -44,19 +41,12 @@ def fetch_user_feed_data(current_user_id):
                     for article in api_data['articles']:
                         source_list = article['source']['name'].lower().split(' ')
                         keyword_list = article['title'].lower().split(' ')
-                        # print("SOurce", sources, source_list, len(sources))
-                        # print("Keyword", keywords, keyword_list, len(keywords))
 
                         if len(sources)!=0 and len(keywords)!=0:
-                            print("THISSSSSSSSSSSSSS 1")
                             for source in sources:
-                                print("Source", source)
                                 if source.lower() in source_list:
                                     for keyword in keywords:
-                                        print("Keyword", keyword)
                                         if keyword.lower() in keyword_list:
-
-                                            # print(article)
                                             feed_dict = {
                                                 "user": current_user_id,
                                                 "user_conf": user_conf_data.id,
@@ -68,17 +58,11 @@ def fetch_user_feed_data(current_user_id):
                                                 "updated_at": time_now,
                                                 "next_update": next_update_time
                                             }
-                                            print(article)
-                                            print("\n\n")
-
                                             serializer = UserFeedSerializer(data=feed_dict)
-                                            # print(serializer.is_valid(raise_exception=True))
-
                                             if serializer.is_valid():
                                                 serializer.save()
 
                         if len(sources)==0 and len(keywords)==0:
-                            print("THAAAAAAAAAAAAAAAAAAAAAAAAAAA 2")
                             feed_dict = {
                                 "user": current_user_id,
                                 "user_conf": user_conf_data.id,
@@ -90,17 +74,11 @@ def fetch_user_feed_data(current_user_id):
                                 "updated_at": time_now,
                                 "next_update": next_update_time
                             }
-                            print(article)
-                            print("\n\n")
-
                             serializer = UserFeedSerializer(data=feed_dict)
-                            # print(serializer.is_valid(raise_exception=True))
-
                             if serializer.is_valid():
                                 serializer.save()
 
                         if len(sources)==0 and len(keywords)!=0:
-                            print("THISSSSSSSSSSSSSSSSSSSSSSSSSSSSSS 3")
                             for keyword in keywords:
                                 if keyword.lower() in keyword_list:
                                     feed_dict = {
@@ -114,20 +92,12 @@ def fetch_user_feed_data(current_user_id):
                                         "updated_at": time_now,
                                         "next_update": next_update_time
                                     }
-                                    print(article)
-                                    print("\n\n")
-
                                     serializer = UserFeedSerializer(data=feed_dict)
-                                    # print(serializer.is_valid(raise_exception=True))
-
                                     if serializer.is_valid():
                                         serializer.save()
 
                         if len(sources)!=0 and len(keywords)==0:
-                            print("THATTTTTTTTTTTTTTTTTTTTTTTTTT 4")
                             for source in sources:
-                                print(source.lower())
-                                print(source_list)
                                 if source.lower() in source_list:
                                     feed_dict = {
                                         "user": current_user_id,
@@ -140,12 +110,7 @@ def fetch_user_feed_data(current_user_id):
                                         "updated_at": time_now,
                                         "next_update": next_update_time
                                     }
-                                    print(article)
-                                    print("\n\n")
-
                                     serializer = UserFeedSerializer(data=feed_dict)
-                                    # print(serializer.is_valid(raise_exception=True))
-
                                     if serializer.is_valid():
                                         serializer.save()
 
@@ -163,8 +128,6 @@ def time_now():
             next_update[update[0]] = update[1]
 
     time = datetime.datetime.now().strftime(f"%Y-%m-%d %H:%M:%S")
-    print("TIME", time)
-    print("NEXT UPDATE", next_update)
     if time in next_update:
         user = next_update[time]
         del next_update[time]
