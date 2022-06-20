@@ -6,16 +6,16 @@
 a. Clone the project repository.
 ```
 ```sh
-a. Checkout to the master branch.
+b. Checkout to the master branch.
 ```
 ```sh
-a. Create a Virtual Environment.
+c. Create a Virtual Environment.
 ```
 ```sh
-a. Activate Virtual Environment.
+d. Activate Virtual Environment.
 ```
 ```sh
-a. Install dependencies/libraries from requirements.txt file.
+e. Install dependencies/libraries from requirements.txt file.
 ```
 
 ### API Endpoints
