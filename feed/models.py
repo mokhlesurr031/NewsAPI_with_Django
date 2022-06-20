@@ -13,5 +13,6 @@ class UserFeed(models.Model):
     detail_news = models.CharField(max_length=455, null=True, blank=True)
     created_at = models.DateTimeField(auto_now_add=True, null=True, blank=True)
     updated_at = models.DateTimeField(null=True, blank=True)
+    next_update = models.CharField(max_length=255, null=True, blank=True)
 
 
