@@ -81,8 +81,18 @@ http://localhost:8000/feed/<str:session/ -[GET]
 
 [GET] - User will see his newsfeed after by making a GET request. The URL should contain the session code as well. For the first request, it may take a few time to fetch all the data from the API server.
 ```
+
+##### NEWS FEED PAGINATION
+```sh
+http://localhost:8000/feed/<str:session/?page=n&pageSize=n  -[GET]
+
+
+To fetch data using pagination user need to pass two params at the and of the url. page params means the page number and pageSize means the maximum content in a single page.
+```
+
+
 ## ABOUT THE SCHEDULER
-**A scheduler has been created in the project that will trigger in every 12 minutes to get the latest news for each user.**
+**A scheduler has been created in the project that will trigger in every 12 minutes to get the latest news for each user. It may take more times based on the interned speed or your pc configuration sometimes.**
 
 
 
