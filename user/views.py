@@ -22,6 +22,7 @@ def api_users(request):
 def registration(request):
     if request.method == 'POST':
         user_data = JSONParser().parse(request)
+        print(user_data)
         try:
             user = User.objects.create(
                 email = user_data['email'],

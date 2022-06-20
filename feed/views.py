@@ -24,8 +24,10 @@ def fetch_user_feed_data(current_user_id):
         time_now = datetime.datetime.now()
         next_update_time = (datetime.datetime.now() - datetime.timedelta(minutes=-15)).strftime(f"%Y-%m-%d %H:%M:%S")
         next_update[next_update_time] = current_user_id
-
         UserFeed.objects.filter(user_id=current_user_id).delete()
+
+
+
 
         if len(countries) != 0:
             for country in countries:
@@ -38,85 +40,117 @@ def fetch_user_feed_data(current_user_id):
                     country_url = 'https://newsapi.org/v2/top-headlines?country={}&page={}&pageSize=100&apiKey={}'.format(
                         country, page, api_key)
                     api_data = requests.get(country_url).json()
+
                     for article in api_data['articles']:
+                        source_list = article['source']['name'].lower().split(' ')
+                        keyword_list = article['title'].lower().split(' ')
+                        # print("SOurce", sources, source_list, len(sources))
+                        # print("Keyword", keywords, keyword_list, len(keywords))
 
-                        # print(article)
-                        feed_dict = {
-                            "user": current_user_id,
-                            "user_conf": user_conf_data.id,
-                            "source": article['source']['name'],
-                            "thumbnail": article['urlToImage'],
-                            "headline": article['title'],
-                            "country": country,
-                            "detail_news": article['url'],
-                            "updated_at": time_now,
-                            "next_update": next_update_time
-                        }
+                        if len(sources)!=0 and len(keywords)!=0:
+                            print("THISSSSSSSSSSSSSS 1")
+                            for source in sources:
+                                print("Source", source)
+                                if source.lower() in source_list:
+                                    for keyword in keywords:
+                                        print("Keyword", keyword)
+                                        if keyword.lower() in keyword_list:
 
-                        serializer = UserFeedSerializer(data=feed_dict)
-                        print(serializer.is_valid(raise_exception=True))
+                                            # print(article)
+                                            feed_dict = {
+                                                "user": current_user_id,
+                                                "user_conf": user_conf_data.id,
+                                                "source": article['source']['name'],
+                                                "thumbnail": article['urlToImage'],
+                                                "headline": article['title'],
+                                                "country": country,
+                                                "detail_news": article['url'],
+                                                "updated_at": time_now,
+                                                "next_update": next_update_time
+                                            }
+                                            print(article)
+                                            print("\n\n")
 
-                        if serializer.is_valid():
-                            serializer.save()
+                                            serializer = UserFeedSerializer(data=feed_dict)
+                                            # print(serializer.is_valid(raise_exception=True))
 
-        if len(keywords) != 0:
-            for keyword in keywords:
-                keyword_api_url = 'https://newsapi.org/v2/top-headlines?q={}&apiKey={}'.format(keyword, api_key)
-                data = requests.get(keyword_api_url).json()
-                total_data = data['totalResults']
-                page_up_to = total_data // 100 + 1 if total_data // 100 != 0 else 1
+                                            if serializer.is_valid():
+                                                serializer.save()
 
-                for page in range(1, page_up_to + 1):
-                    keyword_api_url = 'https://newsapi.org/v2/top-headlines?q={}&page={}&pageSize=100&apiKey={}'.format(
-                        keyword, page, api_key)
-                    api_data = requests.get(keyword_api_url).json()
-                    for article in api_data['articles']:
-                        # print(article)
-                        feed_dict = {
-                            "user": current_user_id,
-                            "user_conf": user_conf_data.id,
-                            "source": article['source']['name'],
-                            "thumbnail": article['urlToImage'],
-                            "headline": article['title'],
-                            # "country": country,
-                            "detail_news": article['url'],
-                            "updated_at": time_now,
-                            "next_update": next_update_time
-                        }
+                        if len(sources)==0 and len(keywords)==0:
+                            print("THAAAAAAAAAAAAAAAAAAAAAAAAAAA 2")
+                            feed_dict = {
+                                "user": current_user_id,
+                                "user_conf": user_conf_data.id,
+                                "source": article['source']['name'],
+                                "thumbnail": article['urlToImage'],
+                                "headline": article['title'],
+                                "country": country,
+                                "detail_news": article['url'],
+                                "updated_at": time_now,
+                                "next_update": next_update_time
+                            }
+                            print(article)
+                            print("\n\n")
 
-                        serializer = UserFeedSerializer(data=feed_dict)
-                        print(serializer.is_valid(raise_exception=True))
+                            serializer = UserFeedSerializer(data=feed_dict)
+                            # print(serializer.is_valid(raise_exception=True))
 
-                        if serializer.is_valid():
-                            serializer.save()
+                            if serializer.is_valid():
+                                serializer.save()
 
-        if len(sources) != 0:
-            source_str = ",".join(sources)
-            source_api_url = 'https://newsapi.org/v2/top-headlines?sources={}&apiKey={}'.format(source_str, api_key)
-            data = requests.get(source_api_url).json()
-            total_data = data['totalResults']
-            page_up_to = total_data // 100 + 1 if total_data // 100 != 0 else 1
+                        if len(sources)==0 and len(keywords)!=0:
+                            print("THISSSSSSSSSSSSSSSSSSSSSSSSSSSSSS 3")
+                            for keyword in keywords:
+                                if keyword.lower() in keyword_list:
+                                    feed_dict = {
+                                        "user": current_user_id,
+                                        "user_conf": user_conf_data.id,
+                                        "source": article['source']['name'],
+                                        "thumbnail": article['urlToImage'],
+                                        "headline": article['title'],
+                                        "country": country,
+                                        "detail_news": article['url'],
+                                        "updated_at": time_now,
+                                        "next_update": next_update_time
+                                    }
+                                    print(article)
+                                    print("\n\n")
 
-            for page in range(1, page_up_to + 1):
-                sources_api_url = 'https://newsapi.org/v2/top-headlines?q={}&page={}&pageSize=100&apiKey={}'.format(
-                    source_str, page, api_key)
-                api_data = requests.get(sources_api_url).json()
-                for article in api_data['articles']:
-                    feed_dict = {
-                        "user": current_user_id,
-                        "user_conf": user_conf_data.id,
-                        "source": article['source']['name'],
-                        "thumbnail": article['urlToImage'],
-                        "headline": article['title'],
-                        # "country": country,
-                        "detail_news": article['url'],
-                        "updated_at": time_now,
-                        "next_update": next_update_time
-                    }
-                    serializer = UserFeedSerializer(data=feed_dict)
-                    print(serializer.is_valid(raise_exception=True))
-                    if serializer.is_valid():
-                        serializer.save()
+                                    serializer = UserFeedSerializer(data=feed_dict)
+                                    # print(serializer.is_valid(raise_exception=True))
+
+                                    if serializer.is_valid():
+                                        serializer.save()
+
+                        if len(sources)!=0 and len(keywords)==0:
+                            print("THATTTTTTTTTTTTTTTTTTTTTTTTTT 4")
+                            for source in sources:
+                                print(source.lower())
+                                print(source_list)
+                                if source.lower() in source_list:
+                                    feed_dict = {
+                                        "user": current_user_id,
+                                        "user_conf": user_conf_data.id,
+                                        "source": article['source']['name'],
+                                        "thumbnail": article['urlToImage'],
+                                        "headline": article['title'],
+                                        "country": country,
+                                        "detail_news": article['url'],
+                                        "updated_at": time_now,
+                                        "next_update": next_update_time
+                                    }
+                                    print(article)
+                                    print("\n\n")
+
+                                    serializer = UserFeedSerializer(data=feed_dict)
+                                    # print(serializer.is_valid(raise_exception=True))
+
+                                    if serializer.is_valid():
+                                        serializer.save()
+
+        else:
+            return HttpResponse("Please Enter Country")
 
     except:
         pass
@@ -129,8 +163,8 @@ def time_now():
             next_update[update[0]] = update[1]
 
     time = datetime.datetime.now().strftime(f"%Y-%m-%d %H:%M:%S")
-    # print("TIME", time)
-    # print("NEXT UPDATE", next_update)
+    print("TIME", time)
+    print("NEXT UPDATE", next_update)
     if time in next_update:
         user = next_update[time]
         del next_update[time]
@@ -155,6 +189,8 @@ def user_feed(request, session):
 
     if request.method == 'GET':
         feed = UserFeed.objects.filter(user_id=current_user_id)
+        if len(feed)==0:
+            fetch_user_feed_data(current_user_id)
 
         try:
             page = int(request.GET.get('page'))
