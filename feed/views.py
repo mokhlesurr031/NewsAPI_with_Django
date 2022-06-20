@@ -49,9 +49,9 @@ def user_feed(request, session):
         current_user_id = current_user.id
 
     if request.method == 'GET':
-        try:
-            # url sample:"http://localhost:8000/feed/hrevp1gq1az6gn44t17h921uunvmk54v/?page=2&pageSize=5"
+        feed = UserFeed.objects.filter(user_id=current_user_id)
 
+        try:
             page = int(request.GET.get('page'))
             pageSize = int(request.GET.get('pageSize'))
             starting_page = page * pageSize - pageSize
@@ -61,14 +61,9 @@ def user_feed(request, session):
             serializer = UserFeedSerializer(feed, many=True)
             return JsonResponse(serializer.data, safe=False)
         except:
-            pass
-
-        try:
-            user_feed_data = UserFeed.objects.filter(user_id = current_user_id)
-            serializer = UserFeedSerializer(user_feed_data, many=True)
+            serializer = UserFeedSerializer(feed, many=True)
             return JsonResponse(serializer.data, safe=False)
-        except:
-            return HttpResponse("No Configuration")
+
 
 
     if request.method == 'POST':
