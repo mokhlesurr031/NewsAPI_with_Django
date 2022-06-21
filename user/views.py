@@ -88,7 +88,8 @@ def feed_settings(request, session):
         serializer = UserFeedConfSerializer(data=user_conf_dict)
         if serializer.is_valid():
             serializer.save()
-            return JsonResponse(serializer.data, status=201)
+            return redirect('run_scheduler', session=session)
+            # return JsonResponse(serializer.data, status=201)
         return JsonResponse(serializer.errors, status=400)
 
 
@@ -97,7 +98,7 @@ def login_user(request):
     if request.method == 'POST':
         user_data = JSONParser().parse(request)
         user = authenticate(
-            username = user_data['username'],
+            username = user_data['email'].split('@')[0],
             password = user_data['password'],
         )
         if user is not None:

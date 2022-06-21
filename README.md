@@ -76,7 +76,7 @@ http://localhost:8000/auth/conf/<str:session>/ -[GET, POST]
 
 ##### NEWS FEED
 ```sh
-http://localhost:8000/feed/<str:session/ -[GET]
+http://localhost:8000/feed/<str:session>/ -[GET]
 
 
 [GET] - User will see his newsfeed after by making a GET request. The URL should contain the session code as well. For the first request, it may take a few time to fetch all the data from the API server.
@@ -84,7 +84,7 @@ http://localhost:8000/feed/<str:session/ -[GET]
 
 ##### NEWS FEED PAGINATION
 ```sh
-http://localhost:8000/feed/<str:session/?page=n&pageSize=n  -[GET]
+http://localhost:8000/feed/<str:session>/?page=n&pageSize=n  -[GET]
 
 
 To fetch data using pagination user need to pass two params at the and of the url. page params means the page number and pageSize means the maximum content in a single page.

@@ -40,6 +40,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'feed',
     'user',
+    'scheduler',
 ]
 
 MIDDLEWARE = [

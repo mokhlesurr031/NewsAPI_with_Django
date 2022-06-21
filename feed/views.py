@@ -1,5 +1,4 @@
 from django.http import HttpResponse, JsonResponse
-from django.shortcuts import render
 from apscheduler.schedulers.background import BackgroundScheduler
 from django.contrib.sessions.models import Session
 from django.contrib.auth import SESSION_KEY
@@ -10,7 +9,6 @@ from user.models import UserFeedConf
 from django.views.decorators.csrf import csrf_exempt
 import requests
 import datetime
-import json
 api_key='e1b552a2b2f04cb28633c432c947c1e8'
 next_update = {}
 
@@ -121,28 +119,23 @@ def fetch_user_feed_data(current_user_id):
         pass
 
 
-def time_now():
-    if len(next_update)==0:
-        user_feed_data = UserFeed.objects.order_by().values_list('next_update', 'user').distinct()
-        for update in user_feed_data:
-            next_update[update[0]] = update[1]
+def user_list_for_scheduled_update():
+    # print("scheduler")
+    user_list = User.objects.all()
+    for user in user_list:
+        print("Updading {}'s feed".format(user.username))
+        fetch_user_feed_data(user.id)
 
-    time = datetime.datetime.now().strftime(f"%Y-%m-%d %H:%M:%S")
-    if time in next_update:
-        user = next_update[time]
-        del next_update[time]
-        fetch_user_feed_data(user)
 
 
 def start_scheduler():
     scheduler = BackgroundScheduler()
-    scheduler.add_job(time_now, 'interval', seconds=1)
+    scheduler.add_job(user_list_for_scheduled_update, 'interval', minutes=15)
     scheduler.start()
 
 
 @csrf_exempt
 def user_feed(request, session):
-    start_scheduler()
     session_key = session
     if session_key is not None:
         session = Session.objects.get(session_key=session_key)
@@ -152,9 +145,10 @@ def user_feed(request, session):
 
     if request.method == 'GET':
         feed = UserFeed.objects.filter(user_id=current_user_id)
+        print(feed)
         if len(feed)==0:
+            print("Fetching data")
             fetch_user_feed_data(current_user_id)
-
         try:
             page = int(request.GET.get('page'))
             pageSize = int(request.GET.get('pageSize'))
