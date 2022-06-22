@@ -130,7 +130,7 @@ def user_list_for_scheduled_update():
 
 def start_scheduler():
     scheduler = BackgroundScheduler()
-    scheduler.add_job(user_list_for_scheduled_update, 'interval', minutes=15)
+    scheduler.add_job(user_list_for_scheduled_update, 'interval', minutes=12)
     scheduler.start()
 
 
