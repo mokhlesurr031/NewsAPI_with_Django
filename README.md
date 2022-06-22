@@ -42,11 +42,13 @@ http://localhost:8000/auth/login/ -[POST]
 
 [POST] - For user login. Format
 {
-    "username": "admin",
+    "email": "admin@gmail.com",
     "password": "admin"
 }
 ```
-**After a successfull login the system will return a session key using which the user will perform further actions. Make sure you are saving this session key.**
+![alt text](NewsFeed/User_Flow_Images/login_successful_with_session_key.png)
+
+**After a successful login the system will return a session key using which the user will perform further actions. Make sure you are saving this session key.**
 
 ##### LOGOUT
 ```sh
